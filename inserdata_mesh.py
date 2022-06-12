@@ -12,7 +12,7 @@ import ipdb
 
 class Data_dist():
     
-    def insert(self,x_get_data_as_mean,y_get_data_as_mean):
+    def insert(self,x_get_data_as_mean,y_get_data_as_mean,multi_dim_data):
         #関数に投入するデータを作成
         x = np.linspace(-100, 100, 100)
         y = np.linspace(-100, 100, 100)
@@ -21,10 +21,12 @@ class Data_dist():
 
         z = np.c_[X.ravel(),Y.ravel()]
         print("Start insert")
-        Z = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)
-        Z = Z.reshape(shape)
+        Z1_1 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)
+        Z = Z1_1.reshape(shape)
 
         return X,Y,Z
+    
+        # return X,Y,Z1_1,Z1_2,Z1_2,Z1_4
     
     
     #二次元正規分布の確率密度を返す関数
@@ -34,6 +36,7 @@ class Data_dist():
         sigma = np.array([[100,0],[0,100]])
 
         mu = np.array([x_p,y_p])
+        # mu = np.array([1,1])
         #分散共分散行列の行列式
         det = np.linalg.det(sigma)
         print(det)
@@ -41,6 +44,7 @@ class Data_dist():
         inv = np.linalg.inv(sigma)
         n = x.ndim
         print(inv)
+        # ipdb.set_trace()
         return np.exp(-np.diag((x - mu)@inv@(x - mu).T)/2.0) / (np.sqrt((2 * np.pi) ** n * det))
     
     def addition_distribute(self,Z_f,Z_s):

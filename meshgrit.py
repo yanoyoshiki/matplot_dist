@@ -31,6 +31,7 @@ class Data_Dist():
         #辞書型の構築
         for i in range(10):
             for l in range(5):
+                #座標ごとに多次元情報(npのlist)を振り分けている
                 self.data_dict.setdefault("index_[{},{}]".format(i,l),Distribution_data[count_num,:])
             count_num+=1
             
@@ -59,11 +60,15 @@ class Data_gat_by_robots():
     #その後平均分布に挿入して平均分布とのKL距離を測定して分布差を計算する
     def data_insert(self,xr_p,yr_p,data):
         self.r_data_dict["index_[{},{}]".format(xr_p,yr_p)]=data
+        #正規分布生成
+        #メッシュグリットの座標を使用して辞書に各センサーデータを格納する
+        
         #取得データから分散小さめの正規分布を生成して平均値から引いたり足したりする量を正規分布によって決定する
         #取得データは離散的な値なので平均値と正規分布によって環境分布を平坦化する
         #辞書型変数にどんどん格納していく
-        
-    def insert(self,x_get_data_as_mean,y_get_data_as_mean):
+    
+    
+    def one_dim_insert(self,x_get_data_as_mean,y_get_data_as_mean):
         #関数に投入するデータを作成
         x = np.linspace(-100, 100, 100)
         y = np.linspace(-100, 100, 100)
@@ -127,16 +132,17 @@ if __name__ == "__main__":
     
     D.response_d(x_posi_1,y_posi_1)
     
+    #任意地点のセンサーデータセット
     gat_Dist_data_1=[10,10,10,10,10]
     gat_Dist_data_2=[20,20,20,20,20]
     gat_Dist_data_3=[30,30,30,30,30]
     gat_Dist_data_4=[40,40,40,40,40]
     
-    #以下のコードを多次元対応させる必要がある
-    X,Y,Z_1_1,Z_1_2,Z_1_3,Z_1_4=Dr.insert(x_posi_1,y_posi_1,gat_Dist_data_1)
-    X,Y,Z_2=Dr.insert(x_posi_2,y_posi_2)
-    X,Y,Z_3=Dr.insert(x_posi_3,y_posi_3)
-    X,Y,Z_4=Dr.insert(x_posi_4,y_posi_4)
+    
+    X,Y,Z_1_1,Z_1_2,Z_1_3,Z_1_4=Dr.data_insert(x_posi_1,y_posi_1,gat_Dist_data_1)
+    X,Y,Z_2_1,Z_2_2,Z_2_3,Z_2_4=Dr.data_insert(x_posi_2,y_posi_2)
+    X,Y,Z_3_1,Z_3_2,Z_3_3,Z_3_4=Dr.data_insert(x_posi_3,y_posi_3)
+    X,Y,Z_4_1,Z_4_2,Z_4_3,Z_4_4=Dr.data_insert(x_posi_4,y_posi_4)
     
     Z=Z_1+Z_2+Z_3+Z_4
     
