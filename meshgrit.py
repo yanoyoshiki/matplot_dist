@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import ipdb
+from inserdata_mesh import Data_dist
 
 # 定義域[-1, 1]のx, yを50個区切りで生成
 
@@ -127,6 +128,8 @@ if __name__ == "__main__":
     
     D=Data_Dist()
     Dr=Data_gat_by_robots()
+    D_d=Data_dist()
+    
     Dist_data=D.data_pro_dist(tem,hum,og,rg,bod)
     D.dict_make(Dist_data)
     
@@ -137,6 +140,10 @@ if __name__ == "__main__":
     gat_Dist_data_2=[20,20,20,20,20]
     gat_Dist_data_3=[30,30,30,30,30]
     gat_Dist_data_4=[40,40,40,40,40]
+    
+    
+    
+    
     
     
     X,Y,Z_1_1,Z_1_2,Z_1_3,Z_1_4=Dr.data_insert(x_posi_1,y_posi_1,gat_Dist_data_1)

@@ -43,10 +43,11 @@ class Data_dist():
         Z=Z.reshape(shape)
         return X,Y,Z
     
-    def makeing_dataset(self,data1,data2):
+    def makeing_dataset(self,data1,data2,data3):
         data=[]
         data.append(data1)
         data.append(data2)
+        data.append(data3)
         return data
     
     def insert(self,x_get_data_as_mean,y_get_data_as_mean):
@@ -77,62 +78,71 @@ class Data_dist():
         Z_1 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[0]
         Z_2 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[1]
         Z_3 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[2]
+        Z_4 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[3]
+        Z_5 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[4]
+        Z_6 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[5]
         
         Z_1 = Z_1.reshape(shape)
         Z_2 = Z_2.reshape(shape)
         Z_3 = Z_3.reshape(shape)
+        Z_4 = Z_4.reshape(shape)
+        Z_5 = Z_5.reshape(shape)
+        Z_6 = Z_6.reshape(shape)
+        
         # ipdb.set_trace()
-        return X,Y,Z_1,Z_2,Z_3
+        return X,Y,Z_1,Z_2,Z_3,Z_4,Z_5,Z_6
     
-    def addition_distribute(self,Z_b1,Z_b2,Z_b3,Z_1,Z_2,Z_3):
+    def addition_distribute(self,Z_b1,Z_b2,Z_b3,Z_b4,Z_b5,Z_b6,Z_1,Z_2,Z_3,Z_4,Z_5,Z_6):
         Z_1=Z_b1+Z_1
         Z_2=Z_b2+Z_2
-        Z_2=Z_b3+Z_3
+        Z_3=Z_b3+Z_3
+        Z_4=Z_b4+Z_4
+        Z_5=Z_b5+Z_5
+        Z_6=Z_b6+Z_6
         
-        return Z_1,Z_2,Z_3
+        return Z_1,Z_2,Z_3,Z_4,Z_5,Z_6
     
 if __name__ == "__main__":
     A=Data_dist()
     
     X_b,Y_b,Z_b=A.baseline()
     
-    #generating sample data
+    #generating sample data-----------
     x_p1=-50
     y_p1=50
-    value_p1=[1,2,3]
+    value_p1=[1,2,3,4,5,6]
     r1=[x_p1,y_p1]
     r1.extend(value_p1)
-    print("posision and value are {}".format(r1))
     # ipdb.set_trace()
     
     x_p2=10
     y_p2=20
-    value_p2=[2,5,6]
+    value_p2=[2,5,6,3,4,2]
     r2=[x_p2,y_p2]
     r2.extend(value_p2)
     
-    data_n=A.makeing_dataset(r1,r2)
-    # ipdb.set_trace()
+    x_p3=10
+    y_p3=20
+    value_p3=[2,5,6,3,4,2]
+    r3=[x_p3,y_p3]
+    r3.extend(value_p3)
     
-    #継続的に増え続ける
-    #ここを繰り返し処理に使う必要がある
-    #とりあえず1台の多次元情報を継続的に使用できるようにしよう
+    data_n=A.makeing_dataset(r1,r2,r3)
+    #--------------------------------
     
-    #これで一台分の環境情報取得補完が完成する
-    X_m,Y_m,Z_1,Z_2,Z_3=A.multi_insert(r1[0],r1[1],r1[2:])
-    Z_1,Z_2,Z_3=A.addition_distribute(Z_b,Z_b,Z_b,Z_1,Z_2,Z_3)
+    #start insert code
+    #treating multidata is data_n
+    X_m,Y_m,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=A.multi_insert(data_n[0][0],data_n[0][1],data_n[0][2:])
+    X_m,Y_m,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=A.multi_insert(data_n[1][0],data_n[1][1],data_n[1][2:])
+    X_m,Y_m,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6=A.multi_insert(data_n[2][0],data_n[2][1],data_n[2][2:])
     
+    Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=A.addition_distribute(Z_b,Z_b,Z_b,Z_b,Z_b,Z_b,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6)
+    Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=A.addition_distribute(Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6)
+    Z_3_1,Z_3_2,Z_3_3,Z_2_4,Z_2_5,Z_2_6=A.addition_distribute(Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6)
+    Zs1,Zs2,Zs3,Zs4,Zs5,Zs6=Z_3_1,Z_3_2,Z_3_3,Z_2_4,Z_2_5,Z_2_6
     
-    #複数データをdata_nとして扱っている
-    X_m,Y_m,Z_1_1,Z_1_2,Z_1_3=A.multi_insert(data_n[0][0],data_n[0][1],data_n[0][2:])
-    X_m,Y_m,Z_2_1,Z_2_2,Z_2_3=A.multi_insert(data_n[1][0],data_n[1][1],data_n[1][2:])
-    
-    Z_1_1,Z_1_2,Z_1_3=A.addition_distribute(Z_b,Z_b,Z_b,Z_1_1,Z_1_2,Z_1_3)
-    Z_2_1,Z_2_2,Z_2_3=A.addition_distribute(Z_1_1,Z_1_2,Z_1_3,Z_2_1,Z_2_2,Z_2_3)
-    #これがほんまならセンサの次元分繰り返すことになっている
-    
-    #グラフ作成
+    #making graph
     ax = Axes3D(plt.figure())
-    ax.plot_wireframe(X_b, Y_b, Z_2_1)
+    ax.plot_wireframe(X_b, Y_b, Zs3)
     # ipdb.set_trace()
     plt.show()
