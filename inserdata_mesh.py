@@ -38,6 +38,7 @@ class Data_dist():
         shape = X.shape
         z = np.c_[X.ravel(),Y.ravel()]
         x=y=0
+        #ここでベースを強制的に0にしている
         Z=self.gaussian(z,x,y)*0
         Z=Z.reshape(shape)
         return X,Y,Z
@@ -120,12 +121,22 @@ if __name__ == "__main__":
     #継続的に増え続ける
     #ここを繰り返し処理に使う必要がある
     #とりあえず1台の多次元情報を継続的に使用できるようにしよう
-    X_m,Y_m,Z_1,Z_2,Z_3=A.multi_insert(r1[0],r1[1],r1[2:])
     
+    #これで一台分の環境情報取得補完が完成する
+    X_m,Y_m,Z_1,Z_2,Z_3=A.multi_insert(r1[0],r1[1],r1[2:])
     Z_1,Z_2,Z_3=A.addition_distribute(Z_b,Z_b,Z_b,Z_1,Z_2,Z_3)
+    
+    
+    #複数データをdata_nとして扱っている
+    #r1,r2をdataとして扱うこと
+    X_m,Y_m,Z_1_1,Z_1_2,Z_1_3=A.multi_insert(data_n[0][0],data_n[0][1],data_n[0][2:])
+    X_m,Y_m,Z_2_1,Z_2_2,Z_2_3=A.multi_insert(data_n[1][0],data_n[1][1],data_n[1][2:])
+    Z_1_1,Z_1_2,Z_1_3=A.addition_distribute(Z_b,Z_b,Z_b,Z_1_1,Z_1_2,Z_1_3)
+    Z_2_1,Z_2_2,Z_2_3=A.addition_distribute(Z_1_1,Z_1_2,Z_1_3,Z_2_1,Z_2_2,Z_2_3)
+    #これがほんまならセンサの次元分繰り返すことになっている
     
     #グラフ作成
     ax = Axes3D(plt.figure())
     ax.plot_wireframe(X_b, Y_b, Z_b)
-    # ipdb.set_trace()
+    ipdb.set_trace()
     plt.show()
