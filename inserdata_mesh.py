@@ -74,18 +74,14 @@ class Data_dist():
         # print("value_1 is {0} ,value_2 is {1} , value_3 is {2}".format(multi_dim_data[0],multi_dim_data[1],multi_dim_data[2]))
         # ipdb.set_trace()
         
-        z_1=z*multi_dim_data[0]
-        z_2=z*multi_dim_data[1]
-        z_3=z*multi_dim_data[2]
-        
-        Z_1 = self.gaussian(z_1,x_get_data_as_mean,y_get_data_as_mean)
-        Z_2 = self.gaussian(z_2,x_get_data_as_mean,y_get_data_as_mean)
-        Z_3 = self.gaussian(z_3,x_get_data_as_mean,y_get_data_as_mean)
+        Z_1 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[0]
+        Z_2 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[1]
+        Z_3 = self.gaussian(z,x_get_data_as_mean,y_get_data_as_mean)*multi_dim_data[2]
         
         Z_1 = Z_1.reshape(shape)
         Z_2 = Z_2.reshape(shape)
         Z_3 = Z_3.reshape(shape)
-        
+        ipdb.set_trace()
         return X,Y,Z_1,Z_2,Z_3
     
     def addition_distribute(self,Z_b1,Z_b2,Z_b3,Z_1,Z_2,Z_3):
@@ -111,7 +107,7 @@ if __name__ == "__main__":
     
     x_p2=10
     y_p2=20
-    value_p2=[4,5,6]
+    value_p2=[2,5,6]
     r2=[x_p2,y_p2]
     r2.extend(value_p2)
     
@@ -137,6 +133,6 @@ if __name__ == "__main__":
     
     #グラフ作成
     ax = Axes3D(plt.figure())
-    ax.plot_wireframe(X_b, Y_b, Z_b)
-    ipdb.set_trace()
+    ax.plot_wireframe(X_b, Y_b, Z_2_1)
+    # ipdb.set_trace()
     plt.show()
