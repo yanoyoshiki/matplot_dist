@@ -103,10 +103,15 @@ class Data_dist():
         return Z_1,Z_2,Z_3,Z_4,Z_5,Z_6
     
     
-    def making_time_width(self,Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,r1,r2,r3):       
+    def making_time_width(self,Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,r1,r2,r3,counts):       
         #r=[x_p,y_p,v1,v2,v3,v4,v5,v6]
         r=np.stack([r1,r2,r3])
-        Z_o_1f,Z_o_2f,Z_o_3f,Z_o_4f,Z_o_5f,Z_o_6f=Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6
+        #Z_o_1[len(Z_o_1)-1]で最新の100*100が取れる
+        if(counts==0):
+            Z_o_1f,Z_o_2f,Z_o_3f,Z_o_4f,Z_o_5f,Z_o_6f=Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6
+        else :
+            Z_o_1f,Z_o_2f,Z_o_3f,Z_o_4f,Z_o_5f,Z_o_6f=Z_o_1[len(Z_o_1)-1],Z_o_2[len(Z_o_2)-1],Z_o_3[len(Z_o_3)-1],Z_o_4[len(Z_o_4)-1],Z_o_5[len(Z_o_5)-1],Z_o_6[len(Z_o_6)-1]
+        
         # ipdb.set_trace()
         for i in range(3):
             X_m,Y_m,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=self.multi_insert(r[i,0],r[i,1],r[i,2:])
@@ -114,14 +119,15 @@ class Data_dist():
             Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=self.addition_distribute(Z_o_1f,Z_o_2f,Z_o_3f,Z_o_4f,Z_o_5f,Z_o_6f,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6)
             Z_o_1f,Z_o_2f,Z_o_3f,Z_o_4f,Z_o_5f,Z_o_6f=Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6
         
-        Z_o_1=np.stack([Z_o_1,Z_n_1])
-        Z_o_2=np.stack([Z_o_2,Z_n_2])
-        Z_o_3=np.stack([Z_o_3,Z_n_3])
-        Z_o_4=np.stack([Z_o_4,Z_n_4])
-        Z_o_5=np.stack([Z_o_5,Z_n_5])
-        Z_o_6=np.stack([Z_o_6,Z_n_6])
+        Z_o_1=np.block([[[Z_o_1]],[[Z_n_1]]])
+        Z_o_2=np.block([[[Z_o_2]],[[Z_n_2]]])
+        Z_o_3=np.block([[[Z_o_3]],[[Z_n_3]]])
+        Z_o_4=np.block([[[Z_o_4]],[[Z_n_4]]])
+        Z_o_5=np.block([[[Z_o_5]],[[Z_n_5]]])
+        Z_o_6=np.block([[[Z_o_6]],[[Z_n_6]]])
+        counts+=1
         
-        return Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6
+        return Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,counts
     
 if __name__ == "__main__":
     A=Data_dist()
@@ -219,19 +225,23 @@ if __name__ == "__main__":
     p3=np.stack([x_p3,y_p3]).T
     rt3=np.block([p3, value_p3])
     
-    Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Zs1,Zs2,Zs3,Zs4,Zs5,Zs6
-    # Z_o_1=Z_o_2=Z_o_3=Z_o_4=Z_o_5=Z_o_6=Z_b
+    # Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Zs1,Zs2,Zs3,Zs4,Zs5,Zs6
+    Z_o_1=Z_o_2=Z_o_3=Z_o_4=Z_o_5=Z_o_6=Z_b
+    counts=0
     #ここでstackされた時系列分布行列を獲得することができる
     #試しにr達に時系列情報を持たせて複数時刻入力してみる(forの回す回数が時刻と思ったらいい)
     for i in range(len(rt1)):
     # for i in range(1):
-        Z_tw_1,Z_tw_2,Z_tw_3,Z_tw_4,Z_tw_5,Z_tw_6=A.making_time_width(Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,rt1[i,:],rt2[i,:],rt3[i,:])
+        print(i)
+        Z_tw_1,Z_tw_2,Z_tw_3,Z_tw_4,Z_tw_5,Z_tw_6,counts=A.making_time_width(Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,rt1[i,:],rt2[i,:],rt3[i,:],counts)
+        Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Z_tw_1,Z_tw_2,Z_tw_3,Z_tw_4,Z_tw_5,Z_tw_6
+        # ipdb.set_trace()
     #-----------------------
     
     
-    
+    # ipdb.set_trace()
     #making graph
     ax = Axes3D(plt.figure())
-    ax.plot_wireframe(X_b, Y_b, Z_o_1)
+    ax.plot_wireframe(X_b, Y_b, Z_o_1[1])
     ipdb.set_trace()
     plt.show()
