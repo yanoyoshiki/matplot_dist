@@ -107,7 +107,6 @@ if __name__ == "__main__":
     
     X_b,Y_b,Z_b=A.baseline()
     
-    #generating sample data-----------
     x_p1=-50
     y_p1=50
     value_p1=[1,2,3,4,5,6]
@@ -144,5 +143,5 @@ if __name__ == "__main__":
     #making graph
     ax = Axes3D(plt.figure())
     ax.plot_wireframe(X_b, Y_b, Zs3)
-    # ipdb.set_trace()
+    ipdb.set_trace()
     plt.show()
