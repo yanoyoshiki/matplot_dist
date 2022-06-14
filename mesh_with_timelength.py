@@ -225,8 +225,8 @@ if __name__ == "__main__":
     p3=np.stack([x_p3,y_p3]).T
     rt3=np.block([p3, value_p3])
     
-    # Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Zs1,Zs2,Zs3,Zs4,Zs5,Zs6
-    Z_o_1=Z_o_2=Z_o_3=Z_o_4=Z_o_5=Z_o_6=Z_b
+    Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Zs1,Zs2,Zs3,Zs4,Zs5,Zs6
+    # Z_o_1=Z_o_2=Z_o_3=Z_o_4=Z_o_5=Z_o_6=Z_b
     counts=0
     #ここでstackされた時系列分布行列を獲得することができる
     #試しにr達に時系列情報を持たせて複数時刻入力してみる(forの回す回数が時刻と思ったらいい)
@@ -237,7 +237,6 @@ if __name__ == "__main__":
         Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6=Z_tw_1,Z_tw_2,Z_tw_3,Z_tw_4,Z_tw_5,Z_tw_6
         # ipdb.set_trace()
     #-----------------------
-    
     
     # ipdb.set_trace()
     #making graph
