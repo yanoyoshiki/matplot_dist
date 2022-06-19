@@ -238,6 +238,8 @@ if __name__ == "__main__":
         # ipdb.set_trace()
     #-----------------------
     
+    
+    
     # ipdb.set_trace()
     #making graph
     ax = Axes3D(plt.figure())
