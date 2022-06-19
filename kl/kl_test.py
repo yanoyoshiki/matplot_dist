@@ -8,6 +8,7 @@ def gaussian1d(x,μ,delta):
     y = 1 / ( np.sqrt(2*np.pi* delta**2 ) )  * np.exp( - ( x - μ )**2  / ( 2 * delta ** 2 ) )
     return y
 
+
 # 正規分布のKL divergence
 def gaussian1d_KLdivergence(μ1,delta1,μ2,delta2):
     A = np.log(delta2/delta1)
@@ -15,6 +16,7 @@ def gaussian1d_KLdivergence(μ1,delta1,μ2,delta2):
     C = -1/2
     y = A + B + C
     return y
+
 
 # KL divergence
 def KLdivergence(p,q,dx):
@@ -89,9 +91,10 @@ plt.plot(U2_exc,KL_U2_exc,label='Analytical')
 # 計算
 point, = ax2.plot([],'o',label='Numerical')
 
-# 凡例
-# plt.legend(loc=1,prop={'size': 15})
 
+
+#グラフ描画---------------------------------------
+# plt.legend(loc=1,prop={'size': 15})
 plt.xlim([U2[0],U2[-1]])
 plt.xlabel('$\mu$')
 plt.ylabel('$KL(p||q)$')
