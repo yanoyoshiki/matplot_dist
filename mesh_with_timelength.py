@@ -238,8 +238,7 @@ if __name__ == "__main__":
         # ipdb.set_trace()
     #-----------------------
     
-    
-    
+    Z=np.stack([Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6])
     # ipdb.set_trace()
     #making graph
     ax = Axes3D(plt.figure())

@@ -39,6 +39,32 @@ class KL_dist():
         return torch_KL_d_value
 
     def sprit_calcu(self,insert_dist,av_dist):
+        #ここで獲得可能な分布の形状は(センサー種，時系列情報，x座標，y座標)になっている。
+        #つまり(6,対象時刻分の長さ,100,100)となる
+        # in_1_dist=insert_dist[:,0,:,:]
+        # in_2_dist=insert_dist[:,1,:,:]
+        # in_3_dist=insert_dist[:,2,:,:]
+        # in_4_dist=insert_dist[:,3,:,:]
+        # in_5_dist=insert_dist[:,4,:,:]
+        # in_6_dist=insert_dist[:,5,:,:]
+        
+        # av_1_dist=av_dist[0,:,:]
+        # av_2_dist=av_dist[1,:,:]
+        # av_3_dist=av_dist[2,:,:]
+        # av_4_dist=av_dist[3,:,:]
+        # av_5_dist=av_dist[4,:,:]
+        # av_6_dist=av_dist[5,:,:]
+        
+        KL_list=[]
+        ipdb.set_trace()
+        print(int(len(av_dist[0,:,:])/10))
+        for i in range(int(len(av_dist[0,:,:])/10)):
+            for l in range(int(len(av_dist[0,:,:])/10)):
+                KL_value=self.torch_KL(insert_dist[:,0,i*10:i*10+10,l*10:l*10+10],av_dist[:2,i*10:i*10+10,l*10:l*10+10])
+                print("{}to{} dist shape is{}".format(i*10,i*10+10,insert_dist[:,0,i*10:i*10+10,l*10:l*10+10].shape))
+                KL_list.append(KL_value)
+        return KL_list
+        
         #ここで計算領域を碁盤の目状に分割
         #それぞれのセンサー値取得後の区画分布と平均分布の区画分布のKLを算出
         #区画毎にKLを出力できるようにする
@@ -60,10 +86,13 @@ if __name__ == "__main__":
     K=KL_dist()
     X_b,Y_b,Z_b=K.baseline()
     
-    dist1=torch.Tensor((Z_b+0.11)*2)
-    dist2=torch.Tensor((Z_b*0.15)*1.4)
+    av_dist=torch.Tensor(np.stack([Z_b,Z_b,Z_b,Z_b,Z_b,Z_b]))
+    dist1=torch.Tensor((np.stack([np.stack([Z_b,Z_b]),np.stack([Z_b,Z_b])])+0.11)*4)
+    dist2=torch.Tensor((np.stack([np.stack([Z_b,Z_b]),np.stack([Z_b,Z_b])])+0.15)*1.4)
     
     KL_value=K.torch_KL(dist1,dist2)
+    
+    KL_list=K.sprit_calcu(dist1,av_dist)
     
     ipdb.set_trace()
     print("{} is KL value".format(KL_value))
