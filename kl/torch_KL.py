@@ -1,3 +1,4 @@
+from dis import dis
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -41,33 +42,30 @@ class KL_dist():
     def sprit_calcu(self,insert_dist,av_dist):
         #ここで獲得可能な分布の形状は(センサー種，時系列情報，x座標，y座標)になっている。
         #つまり(6,対象時刻分の長さ,100,100)となる
-        # in_1_dist=insert_dist[:,0,:,:]
-        # in_2_dist=insert_dist[:,1,:,:]
-        # in_3_dist=insert_dist[:,2,:,:]
-        # in_4_dist=insert_dist[:,3,:,:]
-        # in_5_dist=insert_dist[:,4,:,:]
-        # in_6_dist=insert_dist[:,5,:,:]
-        
-        # av_1_dist=av_dist[0,:,:]
-        # av_2_dist=av_dist[1,:,:]
-        # av_3_dist=av_dist[2,:,:]
-        # av_4_dist=av_dist[3,:,:]
-        # av_5_dist=av_dist[4,:,:]
-        # av_6_dist=av_dist[5,:,:]
         
         KL_list=[]
-        ipdb.set_trace()
+        
+        #それぞれのセンサー値取得後の区画分布と平均分布の区画分布のKLを算出
+        #区画毎にKLを出力
         print(int(len(av_dist[0,:,:])/10))
         for i in range(int(len(av_dist[0,:,:])/10)):
             for l in range(int(len(av_dist[0,:,:])/10)):
                 KL_value=self.torch_KL(insert_dist[:,0,i*10:i*10+10,l*10:l*10+10],av_dist[:2,i*10:i*10+10,l*10:l*10+10])
                 print("{}to{} dist shape is{}".format(i*10,i*10+10,insert_dist[:,0,i*10:i*10+10,l*10:l*10+10].shape))
                 KL_list.append(KL_value)
-        return KL_list
         
-        #ここで計算領域を碁盤の目状に分割
-        #それぞれのセンサー値取得後の区画分布と平均分布の区画分布のKLを算出
-        #区画毎にKLを出力できるようにする
+        # return KL_list
+        disappend_index_list=[]
+        #その中でKLが高い順で3つとってくる
+        #@@@@@@@@@@@@@@@@@@@@@@@@
+        for i in range(3):
+            KL_array=np.array(KL_list)
+            disappend_index=np.argmax(KL_array)
+            np.delete(KL_array,disappend_index)
+            disappend_index_list.append(disappend_index)
+        print("No.1 is {}, No.2 is {}, No.3 is{}".format(disappend_index_list[0],disappend_index_list[1],disappend_index_list[2]))
+        
+        
         print("now codeing")
     
     def calcu_point():
@@ -77,6 +75,8 @@ class KL_dist():
         second_point=1
         third_point=1
         return first_point,second_point,third_point
+    
+    
     
 if __name__ == "__main__":
     P = torch.Tensor([[0.36, 0.48, 0.16],[0.36, 0.48, 0.16]])
