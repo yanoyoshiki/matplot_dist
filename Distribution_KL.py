@@ -67,6 +67,7 @@ class KL_dist():
         print("No.1 is {}, No.2 is {}, No.3 is{}".format(disappend_index_list[0],disappend_index_list[1],disappend_index_list[2]))
         
         
+        print("now codeing")
     
     def calcu_point():
         #1つの評価分布を獲得した後
