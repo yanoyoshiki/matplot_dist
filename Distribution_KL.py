@@ -4,36 +4,37 @@ import torch.nn.functional as F
 import numpy as np
 import ipdb
 
+from mesh_with_timelength import Data_dist
+
 
 class KL_dist():
-    def gaussian(self,x,x_p,y_p):
-        #2変数の分散共分散行列を指定
-        # sigma=np.cov(x,y)
-        sigma = np.array([[100,0],[0,100]])
+    # def gaussian(self,x,x_p,y_p):
+    #     #2変数の分散共分散行列を指定
+    #     # sigma=np.cov(x,y)
+    #     sigma = np.array([[100,0],[0,100]])
 
-        mu = np.array([x_p,y_p])
-        # mu = np.array([1,1])
-        #分散共分散行列の行列式
-        det = np.linalg.det(sigma)
-        # print(det)
-        #分散共分散行列の逆行列
-        inv = np.linalg.inv(sigma)
-        n = x.ndim
-        # print(inv)
+    #     mu = np.array([x_p,y_p])
+    #     # mu = np.array([1,1])
+    #     #分散共分散行列の行列式
+    #     det = np.linalg.det(sigma)
+    #     # print(det)
+    #     #分散共分散行列の逆行列
+    #     inv = np.linalg.inv(sigma)
+    #     n = x.ndim
         
-        return np.exp(-np.diag((x - mu)@inv@(x - mu).T)/2.0) / (np.sqrt((2 * np.pi) ** n * det))
+    #     return np.exp(-np.diag((x - mu)@inv@(x - mu).T)/2.0) / (np.sqrt((2 * np.pi) ** n * det))
     
-    def baseline(self):
-        x = np.linspace(-100, 100, 100)
-        y = np.linspace(-100, 100, 100)
-        X, Y = np.meshgrid(x, y)
-        shape = X.shape
-        z = np.c_[X.ravel(),Y.ravel()]
-        x=y=0
-        #ここでベースを強制的に0にしている
-        Z=self.gaussian(z,x,y)*0
-        Z=Z.reshape(shape)
-        return X,Y,Z
+    # def baseline(self):
+    #     x = np.linspace(-100, 100, 100)
+    #     y = np.linspace(-100, 100, 100)
+    #     X, Y = np.meshgrid(x, y)
+    #     shape = X.shape
+    #     z = np.c_[X.ravel(),Y.ravel()]
+    #     x=y=0
+    #     #ここでベースを強制的に0にしている
+    #     Z=self.gaussian(z,x,y)*0
+    #     Z=Z.reshape(shape)
+    #     return X,Y,Z
         
     def torch_KL(self,first_dist,second_dist):
         torch_KL_d_value=F.kl_div(first_dist.log(), second_dist, None, None, 'sum')
@@ -85,7 +86,8 @@ if __name__ == "__main__":
     
     
     K=KL_dist()
-    X_b,Y_b,Z_b=K.baseline()
+    D=Data_dist()
+    X_b,Y_b,Z_b=D.baseline()
     
     av_dist=torch.Tensor(np.stack([Z_b,Z_b,Z_b,Z_b,Z_b,Z_b]))
     dist1=torch.Tensor((np.stack([np.stack([Z_b,Z_b]),np.stack([Z_b,Z_b])])+0.11)*4)
