@@ -79,8 +79,10 @@ if __name__ == "__main__":
 
 
     Z=Z1+Z2
-
+    
+    z_0=X*0
     ax = Axes3D(plt.figure())
+    Z[0,0]=100
     ax.plot_wireframe(X, Y, Z)
-    # ipdb.set_trace()
+    ipdb.set_trace()
     plt.show()

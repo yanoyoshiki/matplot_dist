@@ -1,6 +1,6 @@
 from bdb import set_trace
 from pyexpat import XML_PARAM_ENTITY_PARSING_ALWAYS
-from random import gauss
+from random import gauss, random
 from re import S
 from readline import insert_text
 from cv2 import add
@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import ipdb
+from python_utils import scale_1024
 
 
 
@@ -115,9 +116,9 @@ class Data_dist():
         # ipdb.set_trace()
         for i in range(len(x)):
             #最新と一個前を同時に扱う必要がある
-            X_m,Y_m,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=A.multi_insert(r_b[i,0],r_b[i,1],r_b[i,2:])
+            X_m,Y_m,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=self.multi_insert(r_b[i,0],r_b[i,1],r_b[i,2:])
             # ipdb.set_trace()
-            Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=A.addition_distribute(Z_b_1,Z_b_2,Z_b_3,Z_b_4,Z_b_5,Z_b_6,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6)
+            Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6=self.addition_distribute(Z_b_1,Z_b_2,Z_b_3,Z_b_4,Z_b_5,Z_b_6,Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6)
             Z_b_1,Z_b_2,Z_b_3,Z_b_4,Z_b_5,Z_b_6=Z_n_1,Z_n_2,Z_n_3,Z_n_4,Z_n_5,Z_n_6
             # ipdb.set_trace()
         #-------------------------------------------------
@@ -125,9 +126,9 @@ class Data_dist():
 
         #start insert code
         #treating multidata is data_n
-        Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=A.addition_distribute(Z_b_1,Z_b_2,Z_b_3,Z_b_4,Z_b_5,Z_b_6,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6)
-        Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=A.addition_distribute(Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6)
-        Z_3_1,Z_3_2,Z_3_3,Z_2_4,Z_2_5,Z_2_6=A.addition_distribute(Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6)
+        Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=self.addition_distribute(Z_b_1,Z_b_2,Z_b_3,Z_b_4,Z_b_5,Z_b_6,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6)
+        Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=self.addition_distribute(Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6)
+        Z_3_1,Z_3_2,Z_3_3,Z_2_4,Z_2_5,Z_2_6=self.addition_distribute(Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6)
         Zs1,Zs2,Zs3,Zs4,Zs5,Zs6=Z_3_1,Z_3_2,Z_3_3,Z_2_4,Z_2_5,Z_2_6
         #=================================================================
 
@@ -161,10 +162,10 @@ class Data_dist():
         r4=[x_p4,y_p4]
         r4.extend(value_p4)
         
-        data_n=A.makeing_dataset(r1,r2,r3)
-        X_m,Y_m,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=A.multi_insert(data_n[0][0],data_n[0][1],data_n[0][2:])
-        X_m,Y_m,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=A.multi_insert(data_n[1][0],data_n[1][1],data_n[1][2:])
-        X_m,Y_m,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6=A.multi_insert(data_n[2][0],data_n[2][1],data_n[2][2:])
+        data_n=self.makeing_dataset(r1,r2,r3)
+        X_m,Y_m,Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6=self.multi_insert(data_n[0][0],data_n[0][1],data_n[0][2:])
+        X_m,Y_m,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6=self.multi_insert(data_n[1][0],data_n[1][1],data_n[1][2:])
+        X_m,Y_m,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6=self.multi_insert(data_n[2][0],data_n[2][1],data_n[2][2:])
         #========================
         return Z_1_1,Z_1_2,Z_1_3,Z_1_4,Z_1_5,Z_1_6,Z_2_1,Z_2_2,Z_2_3,Z_2_4,Z_2_5,Z_2_6,Z_3_1,Z_3_2,Z_3_3,Z_3_4,Z_3_5,Z_3_6
 
@@ -174,25 +175,70 @@ class Data_dist():
         #generating robot sample data-----------
         x_p1=np.array([-50,-45,-40]).T
         y_p1=np.array([50,45,40]).T
-        value_p1=np.array([[10,12,13,14,15,16],[10,12,13,14,15,16],[10,12,13,14,15,16]])
+        
+        value_p1=np.array([[100,120,130,140,150,160],[100,120,130,140,150,160],[100,120,130,140,150,160]])
         p1=np.stack([x_p1,y_p1]).T
         rt1=np.block([p1, value_p1])
-        # ipdb.set_trace()
+        
 
         x_p2=np.array([10,15,20]).T
         y_p2=np.array([20,25,30]).T
-        value_p2=np.array([[12,15,16,13,14,12],[12,15,16,13,14,12],[12,15,16,13,14,12]])
+        value_p2=np.array([[120,150,160,130,140,120],[120,150,160,130,140,120],[120,150,160,130,140,120]])
         p2=np.stack([x_p2,y_p2]).T
         rt2=np.block([p2, value_p2])
 
         x_p3=np.array([-10,-5,0]).T
         y_p3=np.array([-50,-55,60]).T
-        value_p3=np.array([[16,15,12,13,14,12],[16,15,12,13,14,12],[16,15,12,13,14,12]])
+        value_p3=np.array([[160,150,120,130,140,120],[160,150,120,130,140,120],[160,150,120,130,140,120]])
         p3=np.stack([x_p3,y_p3]).T
         rt3=np.block([p3, value_p3])
 
+        ipdb.set_trace()
         return rt1,rt2,rt3
     
+    def dataset_for_time_width_much_more(slfe):
+        #正規化済みの各取得センサー情報に応じた掛けをしなければならない
+        #ここで言っているのは追跡動作を行って環境分布の形成を終えた時の事を指している
+        #time_width-------------
+        #generating robot sample data-----------
+        x_p1=np.linspace(-10, 20, 100)
+        y_p1=np.linspace(-50, 10, 100)
+        x_p2=np.linspace(-10, 20, 100)
+        y_p2=np.linspace(20, 40, 100)
+        x_p3=np.linspace(-50, 0, 100)
+        y_p3=np.linspace(5, 10, 100)
+        s1=np.random.randint(180,200,100)
+        s2=np.random.randint(20,40,100)
+        s3=np.random.randint(0,1000,100)
+        s4=np.random.randint(0,1000,100)
+        s5=np.random.randint(0,1000,100)
+        s6=np.random.randint(0,1000,100)
+        p1=np.array([x_p1[0],y_p1[0]])
+        value_p1=np.array([s1[0],s2[0],s3[0],s4[0],s5[0],s6[0]])*np.random.rand()
+        rt1_oh=np.block([p1,value_p1])
+        
+        p2=np.array([x_p2[0],y_p2[0]])
+        value_p2=np.array([s1[0],s2[0],s3[0],s4[0],s5[0],s6[0]])*np.random.rand()
+        rt2_oh=np.block([p2,value_p2])
+        
+        p3=np.array([x_p3[0],y_p3[0]])
+        value_p3=np.array([s1[0],s2[0],s3[0],s4[0],s5[0],s6[0]])*np.random.rand()
+        rt3_oh=np.block([p3,value_p3])
+        
+        
+        for i in range(9):
+            new_value_1=np.array([x_p1[i+1],y_p1[i+1],s1[i+1],s2[i+1],s3[i+1],s4[i+1],s5[i+1],s6[i+1]])
+            new_value_2=np.array([x_p1[i+1],y_p1[i+1],s1[i+1],s2[i+1],s3[i+1],s4[i+1],s5[i+1],s6[i+1]])
+            new_value_3=np.array([x_p1[i+1],y_p1[i+1],s1[i+1],s2[i+1],s3[i+1],s4[i+1],s5[i+1],s6[i+1]])
+            
+            rt1_oh=np.block([[rt1_oh],[new_value_1]])
+            rt2_oh=np.block([[rt2_oh],[new_value_2]])
+            rt3_oh=np.block([[rt3_oh],[new_value_3]])
+        print(value_p1.shape)
+        # ipdb.set_trace()
+        
+        return rt1_oh,rt2_oh,rt3_oh
+        
     def making_time_width(self,Z_o_1,Z_o_2,Z_o_3,Z_o_4,Z_o_5,Z_o_6,r1,r2,r3,counts):       
         #r=[x_p,y_p,v1,v2,v3,v4,v5,v6]
         r=np.stack([r1,r2,r3])
@@ -242,6 +288,7 @@ class Data_dist():
     
 if __name__ == "__main__":
     A=Data_dist()
+    
     X_b,Y_b,Z_b=A.baseline()
     #sample data-----------
     x = np.random.randint(-100,100,100)
@@ -267,19 +314,24 @@ if __name__ == "__main__":
                                             ,rg
                                             ,bod)
     
-    rt1,rt2,rt3=A.dataset_for_time_width()
+    # rt1,rt2,rt3=A.dataset_for_time_width()
+    rt1,rt2,rt3=A.dataset_for_time_width_much_more()
+    
+    # ipdb.set_trace()
+    
     Z=A.time_proceccing(Zs1,Zs2,Zs3,Zs4,Zs5,Zs6,rt1,rt2,rt3)
     
     dict1 = {'distZ' : Z.tolist()}
-    file1 = open("val.txt", "w") 
+    file1 = open("val_10_ver2.txt", "w") 
     file1.write("%s" %(dict1))
     file1.close()
     
-    ipdb,set_trace()
     
     #--------
     # #making graph
-    # ax = Axes3D(plt.figure())
-    # ax.plot_wireframe(X_b, Y_b, Z[1])
+    ax = Axes3D(plt.figure())
+    ipdb.set_trace()
+    ax.plot_wireframe(X_b, Y_b, Z[0,2,:,:])
     # ipdb.set_trace()
-    # plt.show()
+    plt.show()
+    
