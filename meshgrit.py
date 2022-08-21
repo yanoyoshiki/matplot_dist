@@ -19,11 +19,9 @@ for i in range(10):
 
 #座標を入れたらそれに対応する値を出力する
 class Data_Dist():
-    def __init__(self,dict):
-        self.dict={}
         
     
-    def data_pro_dist(d_1,d_2,d_3,d_4,d_5):
+    def data_pro_dist(self,d_1,d_2,d_3,d_4,d_5):
         np_stack=np.stack([d_1,d_2,d_3,d_4,d_5]).T
         return np_stack
     
@@ -44,8 +42,6 @@ class Data_Dist():
 
 #ロボットによる環境情報取得用コード(実験でもこれを用いる予定)
 class Data_gat_by_robots():
-    def __init__(self,dict):
-        self.r_data_dict={}
         
     #全て平均値で構成される一様分布を作成
     #これを用いて情報量を算出する

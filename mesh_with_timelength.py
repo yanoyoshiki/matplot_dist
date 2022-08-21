@@ -334,4 +334,3 @@ if __name__ == "__main__":
     ax.plot_wireframe(X_b, Y_b, Z[0,2,:,:])
     # ipdb.set_trace()
     plt.show()
-    

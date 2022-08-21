@@ -48,6 +48,13 @@ class KL_dist():
         torch_KL_d_value=F.kl_div(first_dist.log(), second_dist, None, None, 'sum')
         return torch_KL_d_value
 
+
+
+    #================================================================================
+    #--------------------------------------------------------------------------------
+    #この関数はお試しで作成しただけなのでどこにも使用していない
+    #--------------------------------------------------------------------------------
+    
     def sprit_calcu_sensor_time(self,insert_dist,av_dist,sensor_index,time_index):
         #ここで獲得可能な分布の形状は(センサー種，時系列情報，x座標，y座標)になっている。
         #つまり(6,対象時刻分の長さ,100,100)となる
@@ -58,7 +65,7 @@ class KL_dist():
         #区画毎にKLを出力
         
         #======================
-        # #------------------------
+        #------------------------
         #センサー種，時刻指定
         #------------------------
         print(int(len(av_dist[0,0,:,:])/10))
@@ -86,13 +93,14 @@ class KL_dist():
         
         
         print("now codeing")
-    
-    
+    #================================================================================
+
+
     def sprit_calcu_time(self,insert_dist,av_dist,time_index):
         KL_list=[]
         #======================
         #------------------------
-        #時刻のみ指定
+        # 時刻のみ指定
         #------------------------
         print(int(len(av_dist[0,0,:,:])/10))
         for i in range(int(len(av_dist[0,0,:,:])/10)):
@@ -109,9 +117,8 @@ class KL_dist():
         #その中でKLが高い順で3つとってくる
         KL_array=np.array(KL_list)
         space_KL=KL_array.reshape(10,10)
-        
-        
         # ipdb.set_trace()
+        
         for i in range(3):
             disappend_index=np.argmax(KL_array)
             KL_array=np.delete(KL_array,disappend_index)
@@ -131,7 +138,7 @@ class KL_dist():
         KL_list=[]
         #======================
         #------------------------
-        #時刻のみ指定
+        # 全てを考慮して計算を行う
         #------------------------
         print(int(len(av_dist[0,0,:,:])/10))
         for i in range(int(len(av_dist[0,0,:,:])/10)):
@@ -147,13 +154,12 @@ class KL_dist():
         disappend_index_list=[]
         #その中でKLが高い順で3つとってくる
         KL_array=np.array(KL_list)
-        # ipdb.set_trace()
+        
         for i in range(3):
             disappend_index=np.argmax(KL_array)
             KL_array=np.delete(KL_array,disappend_index)
             disappend_index_list.append(disappend_index)
-            # ipdb.set_trace()
-        # ipdb.set_trace()
+            
         print("No.1 is {}, No.2 is {}, No.3 is {}".format(disappend_index_list[0],disappend_index_list[1]+1,disappend_index_list[2]+2))
         
         No1_info_coordinate=[int(disappend_index_list[0]/10),(int(disappend_index_list[0])%10)-1]
@@ -197,6 +203,7 @@ if __name__ == "__main__":
         contents= f.read()
         Z_1=np.array(eval(contents)['distZ'])
     
+    # ipdb.set_trace()
     
     # print(Z_1[:,0,:,:].shape)
     Z_first_temp=Z_1[1,0,:,:]
@@ -210,39 +217,47 @@ if __name__ == "__main__":
     av_dist=torch.Tensor(np.stack([Z_b,Z_b,Z_b,Z_b,Z_b,Z_b]))
     dist_sample1=torch.Tensor((np.stack([np.stack([Z_b,Z_b]),np.stack([Z_b,Z_b])])+0.11)*4)
     dist_sample2=torch.Tensor((np.stack([np.stack([Z_b,Z_b]),np.stack([Z_b,Z_b])])+0.15)*1.4)
-    # ipdb.set_trace()
     
+    #-------------------------------------------------------------------
     # KL_value=K.torch_KL(dist_sample1,dist_sample2)
     KL_value=K.torch_KL(torch.tensor(Z_av[:,:,:,:]+1),torch.tensor(Z_1[:,:,:,:]+1))
     index_list_1,index_list_2,index_list_3,space_KL=K.sprit_calcu_time(torch.tensor(Z_av[:,:,:,:]),torch.tensor(Z_1[:,:,:,:]),0)
+    #-------------------------------------------------------------------
+    
     #全時刻全センサー種から計算されたKL距離から目標位置3点を決定している
     No1_info_coordinate,No2_info_coordinate,No3_info_coordinate=K.sprit_calcu_all(torch.tensor(Z_av[:,:,:,:]),torch.tensor(Z_1[:,:,:,:]))
     #ここで値を変換している
     no1,no2,no3=K.transform_coordinate(No1_info_coordinate,No2_info_coordinate,No3_info_coordinate)
     
     print("Coordinate ___ No.1 is {}. No.2 is {}. No.3 is {}".format(No1_info_coordinate,No2_info_coordinate,No3_info_coordinate))
+    ipdb.set_trace()
     
-    
-    
-    #======================
-    #--------------
+    #================================================
+    #------------------------------------------------
     #テスト時に軌道を受け取って各位置の情報量を吐き出す処理
-    #--------------
-    x=y=[0,0,0,0,0]
-    position_KL_list=[]
+    #------------------------------------------------
     
-    for i in range(len(x)):
-        position_KL=K.position_KL_calcu(space_KL,x[i],y[i])
-        position_KL_list=np.append(position_KL_list,position_KL)
-        # ipdb.set_trace()
-        print(i)
-    #======================
+    # x=y=[0,0,0,0,0]
+    # position_KL_list=[]
+    
+    # for i in range(len(x)):
+    #     position_KL=K.position_KL_calcu(space_KL,x[i],y[i])
+    #     position_KL_list=np.append(position_KL_list,position_KL)
+    #     ipdb.set_trace()
+    #     print(i)
+    
+    #================================================
+    
     
     print("{} is KL value".format(abs(KL_value)))
     
+    #===============================================
+    #------------------------------------------------
     # making graph
+    #------------------------------------------------
     # ax = Axes3D(plt.figure())
     # ax.plot_wireframe(X_b, Y_b, Z_first_temp)
-    ipdb.set_trace()
+    # ipdb.set_trace()
     # plt.show()
-
+    #================================================
+    
